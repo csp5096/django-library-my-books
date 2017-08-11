@@ -1,4 +1,4 @@
-# Ecomstore
+# My Library
 
 A Django project to build a book website for Python 3.5.
 
