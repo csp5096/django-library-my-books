@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Library
+    <title>My Library</title>
 {% endblock %}
 
 {% block master %}
@@ -17,7 +17,20 @@
     {% block jumbotron %}
      <!-- Main jumbotron for a primary marketing message or call to action -->
           <div class="jumbotron">
-            <p>This is a template showcasing the optional theme stylesheet included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
+              {% block content %}
+                <h1>Local Library Homepage</h1>
+
+                <p>Welcome to <em>My Library</em>!</p>
+
+                <p>The library has the following record counts:</p>
+
+                <ul>
+                  <li><strong>Books:</strong> {{ num_books }}</li>
+                  <li><strong>Copies:</strong> {{ num_instances }}</li>
+                  <li><strong>Copies available:</strong> {{ num_instances_available }}</li>
+                  <li><strong>Authors:</strong> {{ num_authors }}</li>
+                </ul>
+              {% endblock %}
           </div>
     {% endblock %}
 
