@@ -1,11 +1,18 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView
+from django.views.generic import ListView
+from django.views.generic import DetailView
 from django.views import generic
 from .models import Book, Author, BookInstance, Genre
-# Import TemplateView
 
-class HomePageView(TemplateView):
+class HomePageView(ListView):
     template_name = "index.html"
+    model = Book
+    context_object_name = "num_books"
+
+    def get_queryset(self):
+
+        return Book.objects.all().count()
 
 class AboutPageView(TemplateView):
     template_name = "about.html"
