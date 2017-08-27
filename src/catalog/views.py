@@ -1,18 +1,52 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
+from django.conf import settings
 from django.views.generic import ListView
 from django.views.generic import DetailView
+from django.http import request
 from django.views import generic
+from django.db.models import Q, Count, Aggregate
 from .models import Book, Author, BookInstance, Genre
 
-class HomePageView(ListView):
+
+import datetime
+
+class BaseFields(object):
+
+    base_query = Book.objects.all()
+
+    def counter(base_query, field_name):
+
+        return base_query.values(field_name).annotate(Count(field_name))
+
+    extra_context_dict = {}
+
+    extra_context_dict['num_books'] = base_query.count()
+    extra_context_dict['num_instances'] = BookInstance.objects.all().count()
+    extra_context_dict['num_instances_available'] = BookInstance.objects.filter(status__exact='a').count()
+    extra_context_dict['num_authors'] = Author.objects.count()
+
+
+class BaseListFields(BaseFields):
     template_name = "index.html"
     model = Book
-    context_object_name = "num_books"
+    context_object_name = "books"
 
-    def get_queryset(self):
+class HomePageView(BaseListFields, ListView):
 
-        return Book.objects.all().count()
+    def get_context_data(self, *args, **kwargs):
+        # Call the base implementation first to get a context
+        context = super (HomePageView, self ).get_context_data (*args, **kwargs )
+
+        # Here's what it looks like to add that extra context, via the dict .update() method.
+        # This is grabbing that dict from the BaseListFields class and merging it into context.
+        context.update ( self.extra_context_dict )
+
+        # Here's what it looks like to add some extra arbitrary content to context.
+        context['page_class'] = '_home_page_view'
+
+        # Return it
+        return context
 
 class AboutPageView(TemplateView):
     template_name = "about.html"
