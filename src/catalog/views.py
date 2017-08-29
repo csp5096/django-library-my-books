@@ -55,7 +55,7 @@ class BookListView(generic.ListView):
     template_name = "catalog/book.html"
     model = Book
     context_object_name = 'book_list' # your own name for the list as a template variable
-    paginate_by = 2
+    paginate_by = 10
 
     def get_queryset(self):
         return Book.objects.filter(title__icontains='a')[:5] # get 5 books containing the title 'The'
@@ -75,7 +75,7 @@ class AuthorListView(generic.ListView):
     template_name = "catalog/author.html"
     model = Author
     context_object_name = 'author_list' # your own name for the list as a template variable
-    paginate_by = 2
+    paginate_by = 10
 
     def get_queryset(self):
         return Author.objects.filter(first_name__icontains='a')[:5] # get 5 books containing the title 'The'

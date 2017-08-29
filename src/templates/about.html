@@ -6,4 +6,28 @@
 
 {% block master %}
 
+
+    {% block styles %}
+    <style>
+        .jumbotron {
+            text-align: center;
+        }
+    </style>
+    {% endblock %}
+
+    {% block jumbotron %}
+     <!-- Main jumbotron for a primary marketing message or call to action -->
+          <div class="jumbotron">
+              {% block content %}
+                <h1>Local Library About Page</h1>
+
+                <p> You have visited this webpage {{ num_visits }}
+                    {% if num_visits == 1 %} time
+                        {% else %} times
+                    {% endif %}.
+                </p>
+              {% endblock %}
+          </div>
+    {% endblock %}
+
 {% endblock %}
