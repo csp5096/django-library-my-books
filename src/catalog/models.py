@@ -15,7 +15,6 @@ class Genre(models.Model):
         """
         return self.name
 
-
 class Book ( models.Model ):
     """
     Model representing a book (but not a specific copy of a book).
@@ -101,3 +100,15 @@ class Author ( models.Model ):
         String for representing the Model object.
         """
         return '%s, %s' % (self.last_name, self.first_name)
+
+class PageView(models.Model):
+    """
+    Model representing page view hit counter.
+    """
+    hits=models.IntegerField(default=0)
+
+    def __str__(self):
+        """
+        String for representing the Model object.
+        """
+        return self.hits
