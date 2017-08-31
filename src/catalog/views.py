@@ -50,30 +50,48 @@ class HomePageView(BaseListFields, ListView):
 
 class AboutFields(object):
 
-    base_query = Book.objects.all()
+    base_query = PageView.objects.all()
 
     def counter(base_query, field_name):
 
         return base_query.values(field_name).annotate(Count(field_name))
 
+    def Home(request):
+
+        if (PageView.objects.count () <= 0):
+            x = PageView.objects.create ()
+            x.save ()
+        else:
+            x = PageView.objects.all ()[0]
+            x.hits = x.hits + 1
+            x.save ()
+        context = {'num_visits': x.hits}
+        return render ( request, context=context )
+
     extra_context_dict = {}
 
     extra_context_dict['num_visits'] = base_query.count()
 
-class AboutPageView(TemplateView):
-    template_name = "about.html"
+class AboutListFields ( AboutFields ):
+        template_name = "about.html"
+        model = Book
+        context_object_name = "books"
 
-    def Home(request):
+class AboutPageView(AboutListFields, ListView):
 
-        if (AboutPageView.objects.count () <= 0):
-            x = AboutPageView.objects.create ()
-            x.save ()
-        else:
-            x = AboutPageView.objects.all ()[0]
-            x.hits = x.hits + 1
-            x.save ()
-        context = {'num_visits': x.hits}
-        return render ( request, 'about.html', context=context )
+    def get_context_data(self, *args, **kwargs):
+        # Call the base implementation first to get a context
+        context = super (AboutPageView, self ).get_context_data (*args, **kwargs )
+
+        # Here's what it looks like to add that extra context, via the dict .update() method.
+        # This is grabbing that dict from the BaseListFields class and merging it into context.
+        context.update ( self.extra_context_dict )
+
+        # Here's what it looks like to add some extra arbitrary content to context.
+        context['page_class'] = '_about_page_view'
+
+        # Return it
+        return context
 
 class BookListView(generic.ListView):
     template_name = "catalog/book.html"
