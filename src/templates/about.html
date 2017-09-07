@@ -21,8 +21,8 @@
               {% block content %}
                 <h1>Local Library About Page</h1>
 
-                <p> You have visited this webpage {{ num_visits }}
-                    {% if num_visits == 1 %} time
+                <p> You have visited this webpage {{ tracking_hit_post }}
+                    {% if tracking_hit_post == 1 %} time
                         {% else %} times
                     {% endif %}.
                 </p>

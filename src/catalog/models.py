@@ -2,6 +2,7 @@ from django.db import models
 from django.core.urlresolvers import reverse #Used to generate URLs by reversing the URL pattern
 
 import uuid # Required for unique book instances
+import datetime
 
 class Genre(models.Model):
     """
@@ -101,14 +102,21 @@ class Author ( models.Model ):
         """
         return '%s, %s' % (self.last_name, self.first_name)
 
-class PageView(models.Model):
+class Entry_Views(models.Model):
     """
-    Model representing page view hit counter.
+    Model representing a hit counter per book view.
     """
-    hits=models.IntegerField(default=0)
+    entry = models.ForeignKey('Book', related_name='entry_views')
+    ip = models.CharField(max_length=40)
+    session = models.CharField(max_length=40, null=True)
+    created = models.DateTimeField(default=datetime.datetime.now())
 
-    def __str__(self):
+    def __unicode__(self):
         """
         String for representing the Model object.
         """
-        return self.hits
+        return self.entry.title
+
+    class Meta:
+        verbose_name_plural = "Entry Views"
+

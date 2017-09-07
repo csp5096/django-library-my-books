@@ -6,10 +6,11 @@ from django.views.generic import DetailView
 from django.http import request
 from django.views import generic
 from django.db.models import Q, Count, Aggregate
-from .models import Book, Author, BookInstance, Genre, PageView
-
+from .models import Book, Author, BookInstance, Genre, Entry_Views
+from django.core.exceptions import ObjectDoesNotExist
 
 import datetime
+
 
 class BaseFields(object):
 
@@ -48,50 +49,46 @@ class HomePageView(BaseListFields, ListView):
         # Return it
         return context
 
-class AboutFields(object):
+class AboutPageView(generic.DetailView):
+    template_name = "about.html"
+    model = Entry_Views
 
-    base_query = PageView.objects.all()
-
-    def counter(base_query, field_name):
-
-        return base_query.values(field_name).annotate(Count(field_name))
-
-    def Home(request):
-
-        if (PageView.objects.count () <= 0):
-            x = PageView.objects.create ()
-            x.save ()
+    def get_client_ip(self):
+        ip = self.request.META.get ( "HTTP_X_FORWARDED_FOR", None )
+        if ip:
+            ip = ip.split ( ", " )[0]
         else:
-            x = PageView.objects.all ()[0]
-            x.hits = x.hits + 1
-            x.save ()
-        context = {'num_visits': x.hits}
-        return render ( request, context=context )
+            ip = self.request.META.get ( "REMOTE_ADDR", "" )
+        return ip
 
-    extra_context_dict = {}
+    def tracking_hit_post(self):
+        entry = self.model.objects.get ( pk=self.object.id )
 
-    extra_context_dict['num_visits'] = base_query.count()
+        try:
+            Entry_Views.objects.get ( entry=entry, ip=self.get_client_ip (),
+                                             session=self.request.session.session_key )
+        except ObjectDoesNotExist:
+            import socket
+            dns = str ( socket.getfqdn ( self.get_client_ip () ) ).split ( '.' )[-1]
+            try:
+                if int ( dns ):
+                    view = Entry_Views ( entry=entry,
+                                                ip=self.get_client_ip (),
+                                                created=datetime.datetime.now (),
+                                                session=self.request.session.session_key )
+                    view.save ()
+                else:
+                    pass
+            except ValueError:
+                pass
+        return Entry_Views.objects.filter ( entry=entry ).count ()
 
-class AboutListFields ( AboutFields ):
-        template_name = "about.html"
-        model = Book
-        context_object_name = "books"
+    def get_context_data(self, **kwargs):
+        context_data = super ( AboutPageView, self ).get_context_data ( **kwargs )
 
-class AboutPageView(AboutListFields, ListView):
-
-    def get_context_data(self, *args, **kwargs):
-        # Call the base implementation first to get a context
-        context = super (AboutPageView, self ).get_context_data (*args, **kwargs )
-
-        # Here's what it looks like to add that extra context, via the dict .update() method.
-        # This is grabbing that dict from the BaseListFields class and merging it into context.
-        context.update ( self.extra_context_dict )
-
-        # Here's what it looks like to add some extra arbitrary content to context.
-        context['page_class'] = '_about_page_view'
-
-        # Return it
-        return context
+        context_data['get_client_ip'] = self.get_client_ip
+        context_data['tracking_hit_post'] = self.tracking_hit_post ()
+        return context_data
 
 class BookListView(generic.ListView):
     template_name = "catalog/book.html"
