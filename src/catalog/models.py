@@ -102,21 +102,3 @@ class Author ( models.Model ):
         """
         return '%s, %s' % (self.last_name, self.first_name)
 
-class Entry_Views(models.Model):
-    """
-    Model representing a hit counter per book view.
-    """
-    entry = models.ForeignKey('Book', related_name='entry_views')
-    ip = models.CharField(max_length=40)
-    session = models.CharField(max_length=40, null=True)
-    created = models.DateTimeField(default=datetime.datetime.now())
-
-    def __unicode__(self):
-        """
-        String for representing the Model object.
-        """
-        return self.entry.title
-
-    class Meta:
-        verbose_name_plural = "Entry Views"
-

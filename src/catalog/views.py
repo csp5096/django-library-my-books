@@ -6,7 +6,7 @@ from django.views.generic import DetailView
 from django.http import request
 from django.views import generic
 from django.db.models import Q, Count, Aggregate
-from .models import Book, Author, BookInstance, Genre, Entry_Views
+from .models import Book, Author, BookInstance, Genre
 from django.core.exceptions import ObjectDoesNotExist
 
 import datetime
@@ -49,46 +49,9 @@ class HomePageView(BaseListFields, ListView):
         # Return it
         return context
 
-class AboutPageView(generic.DetailView):
+class AboutPageView(generic.ListView):
     template_name = "about.html"
-    model = Entry_Views
-
-    def get_client_ip(self):
-        ip = self.request.META.get ( "HTTP_X_FORWARDED_FOR", None )
-        if ip:
-            ip = ip.split ( ", " )[0]
-        else:
-            ip = self.request.META.get ( "REMOTE_ADDR", "" )
-        return ip
-
-    def tracking_hit_post(self):
-        entry = self.model.objects.get ( pk=self.object.id )
-
-        try:
-            Entry_Views.objects.get ( entry=entry, ip=self.get_client_ip (),
-                                             session=self.request.session.session_key )
-        except ObjectDoesNotExist:
-            import socket
-            dns = str ( socket.getfqdn ( self.get_client_ip () ) ).split ( '.' )[-1]
-            try:
-                if int ( dns ):
-                    view = Entry_Views ( entry=entry,
-                                                ip=self.get_client_ip (),
-                                                created=datetime.datetime.now (),
-                                                session=self.request.session.session_key )
-                    view.save ()
-                else:
-                    pass
-            except ValueError:
-                pass
-        return Entry_Views.objects.filter ( entry=entry ).count ()
-
-    def get_context_data(self, **kwargs):
-        context_data = super ( AboutPageView, self ).get_context_data ( **kwargs )
-
-        context_data['get_client_ip'] = self.get_client_ip
-        context_data['tracking_hit_post'] = self.tracking_hit_post ()
-        return context_data
+    model = Book
 
 class BookListView(generic.ListView):
     template_name = "catalog/book.html"

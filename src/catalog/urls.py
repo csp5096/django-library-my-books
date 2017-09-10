@@ -6,6 +6,7 @@ from catalog import views
 urlpatterns = [
     url(r'^$', views.HomePageView.as_view(), name='home'),
     url(r'^about/$', views.AboutPageView.as_view(), name='about'),
+    url(r'^about/(?P<pk>\d+)$', views.AboutPageView.as_view(), name='about'),
     url(r'^books/$', views.BookListView.as_view(), name='books'),
     url(r'^book/(?P<pk>\d+)$', views.BookDetailView.as_view(), name='book-detail'),
     url(r'^authors/$', views.AuthorListView.as_view(), name='authors'),
