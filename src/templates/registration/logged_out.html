@@ -1,0 +1,25 @@
+{% extends 'primes/account.html' %}
+
+{% block worker %}
+
+    {% block styles %}
+        <style>
+            .jumbotron {
+                text-align: center;
+            }
+        </style>
+    {% endblock %}
+
+    {% block jumbotron %}
+     <!-- Main jumbotron for a primary marketing message or call to action -->
+          <div class="jumbotron">
+              {% block content %}
+                <p>Logged out!</p>
+
+                <a href="{% url 'login'%}">Click here to login again.</a>
+
+              {% endblock %}
+          </div>
+    {% endblock %}
+
+{% endblock %}
