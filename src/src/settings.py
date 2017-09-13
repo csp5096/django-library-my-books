@@ -157,6 +157,7 @@ STATICFILES_DIRS = (
 # Development Debg Settings
 
 if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     MEDIA_URL = '/media/'
     STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static-only")
     MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
