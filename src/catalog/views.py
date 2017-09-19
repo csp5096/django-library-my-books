@@ -6,9 +6,16 @@ from django.views.generic import DetailView
 from django.http import request
 from django.views import generic
 from django.db.models import Q, Count, Aggregate
-from .models import Book, Author, BookInstance, Genre
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.core.urlresolvers import reverse
+
+from .models import Book, Author, BookInstance, Genre
+from .models import Author
 
 import datetime
 
@@ -94,6 +101,18 @@ class AuthorDetailView(generic.DetailView):
     template_name = "catalog/author_detail.html"
     model = Author
 
+class AuthorCreate(CreateView):
+    model = Author
+    fields = '_all_'
+    initial = {'date_of_death':'12/10/2016',}
+
+class AuthorUpdate(UpdateView):
+    model = Author
+    fields = ['first_name','last_name','date_of_birth','date_of_death']
+
+class AuthorDelete(DetailView):
+    model = Author
+    fields = ['first_name','last_name','date_of_birth','date_of_death',]
 
 class LoanedBooksByUserListView ( LoginRequiredMixin, generic.ListView ):
     """
