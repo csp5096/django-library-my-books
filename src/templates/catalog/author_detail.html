@@ -19,6 +19,7 @@
               <div class="jumbotron">
 
                   {% block content %}
+
                     <h1>Author: {{author.first_name}} {{author.last_name}}</h1>
 
                     <div style="margin-left:20px;margin-top:20px">
@@ -39,9 +40,10 @@
 
                         {% endfor %}
 
-                    </div>
                   {% endblock %}
+
               </div>
+
         {% endblock %}
 
 {% endblock %}

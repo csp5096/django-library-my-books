@@ -1,0 +1,38 @@
+{% extends 'primes/catalog.html' %}
+
+{% block worker %}
+
+{% block title %}
+    Author's Details
+{% endblock %}
+
+        {% block styles %}
+        <style>
+            .jumbotron {
+                text-align: center;
+            }
+        </style>
+        {% endblock %}
+
+        {% block jumbotron %}
+         <!-- Main jumbotron for a primary marketing message or call to action -->
+              <div class="jumbotron">
+
+                  {% block content %}
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <table>
+                        {{ form.as_table }}
+                        </table>
+                        <input type="submit" class= "btn btn-deault" value="Submit" />
+
+                    </form>
+
+                  {% endblock %}
+
+              </div>
+
+        {% endblock %}
+
+{% endblock %}

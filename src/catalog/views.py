@@ -12,10 +12,9 @@ from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 
 from .models import Book, Author, BookInstance, Genre
-from .models import Author
 
 import datetime
 
@@ -103,16 +102,16 @@ class AuthorDetailView(generic.DetailView):
 
 class AuthorCreate(CreateView):
     model = Author
-    fields = '_all_'
+    fields = '__all__'
     initial = {'date_of_death':'12/10/2016',}
 
 class AuthorUpdate(UpdateView):
     model = Author
     fields = ['first_name','last_name','date_of_birth','date_of_death']
 
-class AuthorDelete(DetailView):
+class AuthorDelete(DeleteView):
     model = Author
-    fields = ['first_name','last_name','date_of_birth','date_of_death',]
+    success_url = reverse_lazy('authors')
 
 class LoanedBooksByUserListView ( LoginRequiredMixin, generic.ListView ):
     """
