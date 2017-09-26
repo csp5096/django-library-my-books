@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'catalog',
     'profiles',
     'allauth',
+    'registration',
     'allauth.account',
     'allauth.socialaccount',
     # ... include the providers you want to enable:
