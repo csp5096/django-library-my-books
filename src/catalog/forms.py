@@ -6,7 +6,6 @@ from .models import BookInstance
 
 import datetime
 
-
 class RenewBookModelForm ( ModelForm ):
     def clean_due_back(self):
         data = self.cleaned_data['due_back']
